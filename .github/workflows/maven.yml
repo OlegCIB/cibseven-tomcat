@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'Jenkinsfile.*'
-    pull_request:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -27,9 +23,5 @@ jobs:
         cache: 'maven'
 
     - name: Run Maven install
-      run: mvn install
+      run: mvn clean org.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom package -DexcludeTestProject -DskipTests -DoutputDirectory=target/generated-resources -DoutputName=sbom-cdx -f distro/tomcat/pom.xml
 
-    - name: Junit Test Dashboard
-      uses: janisz/action@v2
-      with:
-        paths: ${{ github.workspace }}/**/target/surefire-reports/*.xml
